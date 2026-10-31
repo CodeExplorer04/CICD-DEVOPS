@@ -1,4 +1,4 @@
-# ☁️ Azure CI/CD & DevOps Infrastructure as Code (Bicep)
+# Azure CI/CD & DevOps Infrastructure as Code (Bicep)
 
 > **Automated Cloud Infrastructure Deployment on Microsoft Azure using Bicep & CI/CD Pipelines**
 
@@ -9,7 +9,7 @@
 
 ---
 
-## 📌 Overview
+## Overview
 
 This project showcases **Infrastructure as Code (IaC)** on **Microsoft Azure** using **Bicep**—Azure's next-generation declarative language for provisioning cloud resources cleanly, deterministically, and repeatably.
 
@@ -17,7 +17,7 @@ The template defines enterprise-standard cloud resources (such as secure Azure S
 
 ---
 
-## 🏗️ Repository Structure
+## Repository Structure
 
 ```
 CICD-DEVOPS/
@@ -28,7 +28,7 @@ CICD-DEVOPS/
 
 ---
 
-## ⚙️ Resource Specifications (`main.bicep`)
+## Resource Specifications (`main.bicep`)
 
 The Bicep template provisions the following Azure resources:
 
@@ -39,11 +39,9 @@ The Bicep template provisions the following Azure resources:
 | **Resource Name** | `demostorageaccount123` | Unique storage account identifier |
 | **SKU** | `Standard_LRS` | Standard redundancy (Locally-Redundant Storage) |
 | **Kind** | `StorageV2` | General Purpose v2 (supports blobs, data lakes, tiering) |
-| **Location** | `resourceGroup().location` | Dynamically inherits parent Azure Resource Group region |
+| **Location** | `resourceGroup().location` | Dynamically inherits parent Azure Resource Group region | ---
 
----
-
-## 🛠️ Prerequisites
+## Prerequisites
 
 - **Azure Account:** Active Azure subscription ([Free Account](https://azure.microsoft.com/free/))
 - **Azure CLI:** Version 2.40.0+ installed (`az --version`)
@@ -52,7 +50,7 @@ The Bicep template provisions the following Azure resources:
 
 ---
 
-## 🚀 Deployment Guide
+## Deployment Guide
 
 ### Step 1: Log in to Azure
 ```bash
@@ -97,7 +95,7 @@ az deployment group create \
 
 ---
 
-## 🔄 CI/CD Pipeline Automation (GitHub Actions Example)
+## CI/CD Pipeline Automation (GitHub Actions Example)
 
 To automate deployments on every `git push` to `main`, place the following workflow in `.github/workflows/deploy.yml`:
 
@@ -144,7 +142,7 @@ jobs:
 
 ---
 
-## 🔒 Security Best Practices
+## Security Best Practices
 
 1. **Storage Account Naming:** Storage account names must be globally unique across all Azure accounts (3-24 characters, lowercase alphanumeric only).
 2. **Access Control:** Integrate with Azure Key Vault to store secrets and use Managed Identities rather than static connection strings.
@@ -152,6 +150,6 @@ jobs:
 
 ---
 
-## 📄 License
+## License
 
 This project is open-source under the [MIT License](LICENSE).
