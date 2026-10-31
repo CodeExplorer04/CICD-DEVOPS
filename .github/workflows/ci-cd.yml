@@ -1,0 +1,74 @@
+name: Azure Bicep CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  RESOURCE_GROUP_NAME: "rg-devops-cloud-prod"
+  LOCATION: "eastus"
+
+jobs:
+  lint-and-validate:
+    name: Lint & Pre-flight Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Install Azure Bicep CLI
+        run: az bicep install
+
+      - name: Build & Lint Bicep Template
+        run: az bicep build --file main.bicep
+
+      - name: Log in to Azure (OIDC / Credentials)
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Pre-flight Deployment Validation
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+          template: ./main.bicep
+          parameters: ./parameters.json
+          deploymentMode: Validate
+
+      - name: Speculative What-If Preview
+        run: |
+          az deployment group what-if \
+            --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+            --template-file ./main.bicep \
+            --parameters ./parameters.json
+
+  deploy-infrastructure:
+    name: Deploy to Production
+    needs: [lint-and-validate]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Provision Azure Infrastructure
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+          template: ./main.bicep
+          parameters: ./parameters.json
+          deploymentMode: Incremental

@@ -1,0 +1,14 @@
+# Compiled Azure ARM templates
+*.json
+!parameters*.json
+
+# OS and IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Environment and secrets
+*.env
+*.tfstate
+*.tfstate.*
